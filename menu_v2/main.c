@@ -6,20 +6,20 @@
 #include "SDL/SDL_gfxPrimitives.h"
 #include "SDL/SDL_mixer.h"
 
-#define w 1213
-#define h 760
+#define w 1213 // pos background
+#define h 760    //
 
-#define n_w 385
-#define n_h 55
+#define n_w 385  //pos load_newgame image 
+#define n_h 55    //
 
-#define s_w 295
-#define s_h 55
+#define s_w 295   // pos settings 
+#define s_h 55      //
 
-#define e_w 180
-#define e_h 55
+#define e_w 180  //pos exit
+#define e_h 55     //
 
-#define sound_w 55
-#define sound_h 55
+#define sound_w 55 //pos icon sound en haut a gauche
+#define sound_h 55  //
 
 #define i_s_w 500 //insound surface width
 #define i_s_h 80  //insound surface high
@@ -138,41 +138,41 @@ int main()
   {
     printf("%s", Mix_GetError());
   }
-  music2 = Mix_LoadMUS("soundtrack-jumanji-welcome-to-the-jungle-theme-song-epic-music-2017-musique-film-jumanji.wav");
+  music2 = Mix_LoadMUS("soundtrack-jumanji-welcome-to-the-jungle-theme-song-epic-music-2017-musique-film-jumanji.wav"); //music de fond
   Mix_PlayMusic(music2,-1) ;
   
   Mix_Chunk *music;
-  music = Mix_LoadWAV("son1.wav");
+  music = Mix_LoadWAV("son1.wav"); //effet sonore
   
 
 
-  FILE *f = fopen("test.txt", "a");
+  FILE *f = fopen("test.txt", "a"); //fichier pour tester le code
   fprintf(f, "test");
     SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 255, 255, 255));
     SDL_BlitSurface(background, NULL, screen, &posback);
     SDL_BlitSurface(sound, NULL, screen, &pos_sound);
     SDL_Flip(screen);
-  SDL_EnableKeyRepeat(100, 100);
+  SDL_EnableKeyRepeat(100, 100); //activer le clic continure du fleche
   while (running)
   {
     SDL_WaitEvent(&event);
     switch (event.type)
     {
-      case SDL_MOUSEBUTTONDOWN:
-       if (event.button.button == SDL_BUTTON_LEFT && i==4 )
+      case SDL_MOUSEBUTTONDOWN: 
+       if (event.button.button == SDL_BUTTON_LEFT && i==4 ) // clic gauche souris avec la position du curseur en exit
        {
            SDL_BlitSurface(wexit, NULL, screen, &posback);
            SDL_Flip(screen);
-          while(running3)
+          while(running3) // debuter un boucle infinie dans un boucle infinie 
           {
            SDL_PollEvent(&event);
             switch (event.type)
                {
-                  case SDL_QUIT:
+                  case SDL_QUIT: // quitter le programme
                   running3=0 ;
                   running=0 ;
                   break ;
-                  case SDL_MOUSEMOTION:
+                  case SDL_MOUSEMOTION: //bliter un image lorsque le curseur de la souris dans cette conditon
                   if (event.motion.x > pos_no.x && event.motion.x < (yn_w + pos_no.x) && event.motion.y > pos_no.y && event.motion.y < (yn_h + pos_no.y))
                              {
                                SDL_BlitSurface(nwexit, NULL, screen, &posback); 
@@ -189,7 +189,7 @@ int main()
 
                      
                   break ;
-                  case SDL_KEYDOWN:
+                  case SDL_KEYDOWN: // echap por quitter
                       switch (event.key.keysym.sym)
                         {
                            case SDLK_ESCAPE:
@@ -201,9 +201,9 @@ int main()
           }
           
            }
-       else if (event.button.button == SDL_BUTTON_LEFT && in==1 )
+       else if (event.button.button == SDL_BUTTON_LEFT && in==1 ) // clic gauche de souris et le curseur  se trouve dans l icon de spon
        {
-         if(s==0)
+         if(s==0)  // si son activé le desactive
          {
             
             SDL_BlitSurface(background, NULL, screen, &posback);
@@ -215,7 +215,7 @@ int main()
             s=1 ;
             in=0 ;
          }
-         else if(s==1)
+         else if(s==1) //si son desactivé  l'active
          {
             
             SDL_BlitSurface(background, NULL, screen, &posback);
@@ -230,20 +230,20 @@ int main()
          }
 
        }
-       else if (event.button.button == SDL_BUTTON_LEFT && i==3 )
+       else if (event.button.button == SDL_BUTTON_LEFT && i==3 ) //clic gauche souris avec la position du curseur en settings
        {
 
             SDL_BlitSurface(in_settings, NULL, screen, &posback);
             SDL_Flip(screen);
             i=0;
             running2=1 ;
-            while(running2)
+            while(running2) //entrer dans le sous menu de settings et debuter le boucle infinie
             {
               
                SDL_WaitEvent(&event);
                 switch (event.type)
                  {
-                      case SDL_MOUSEMOTION:
+                      case SDL_MOUSEMOTION: 
       
                           if (event.motion.x > pos_insound.x && event.motion.x < (i_s_w + pos_insound.x) && event.motion.y > pos_insound.y && event.motion.y < (i_s_h + pos_insound.y))
                              {
