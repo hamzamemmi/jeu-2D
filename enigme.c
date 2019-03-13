@@ -13,12 +13,7 @@ y2=170;
 x3=570;
 y3=60;
 }
-int generatin_aleatoire(int nbalea)
-{
-srand(time(NULL));
-nbalea=1+rand()%5;
-return nbalea;
-}
+
 
 void afficher_enigme(char image[20])
 {
