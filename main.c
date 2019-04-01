@@ -1,72 +1,70 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <SDL/SDL.h>
-
+#include <SDL/SDL_image.h>
+#include <SDL/SDL_ttf.h>
 
 int main(int argc, char *argv[])
 {
-
-    SDL_Surface *fond = NULL, *pelouse = NULL, *vache = NULL;
-    SDL_Rect positionPelouse, positionVache;
-    int continuer = 1, droite = 1;
+    SDL_Surface *ecran = NULL, *texte = NULL;
+    SDL_Rect position;
     SDL_Event event;
- 
+    TTF_Font *police = NULL;
+    SDL_Color couleurNoire = {0, 0, 0}, couleurBlanche = {255, 255, 255};
+    int continuer = 1;
+    int tempsActuel = 0, tempsPrecedent = 0, compteur = 0;
+    char temps[20] = ""; /* Tableau de char suffisamment grand */
 
     SDL_Init(SDL_INIT_VIDEO);
-  
+    TTF_Init();
 
-    fond = SDL_SetVideoMode(1280,640,32,SDL_HWSURFACE);
-    pelouse = SDL_LoadBMP("background.bmp");
-    vache = SDL_LoadBMP("enemy1battleportrait.bmp");
+    ecran = SDL_SetVideoMode(640, 480, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
+    SDL_WM_SetCaption("Gestion du texte avec SDL_ttf", NULL);
 
-    SDL_SetColorKey(vache, SDL_SRCCOLORKEY,SDL_MapRGB(vache->format,0,0,255));
- 
+    /* Chargement de la police */
+    police = TTF_OpenFont("angelina.TTF", 65);
 
-    SDL_WM_SetCaption("Mouvement",NULL);
- 
+    /* Initialisation du temps et du texte */
+    tempsActuel = SDL_GetTicks();
+    sprintf(temps, "Temps : %d", compteur);
+    texte = TTF_RenderText_Shaded(police, temps, couleurNoire, couleurBlanche);
 
-    SDL_FillRect(fond,NULL,SDL_MapRGB(fond->format,255,0,0));
- 
-
-    positionPelouse.x = 0;
-    positionPelouse.y = 0;
-    positionVache.x = 700;
-    positionVache.y = 400;
- 
-
-    SDL_BlitSurface(pelouse,NULL,fond,&positionPelouse);
-    SDL_BlitSurface(vache,NULL,fond,&positionVache);
- 
-
-    while(continuer) {
+    while (continuer)
+    {
         SDL_PollEvent(&event);
-        switch (event.type) {
-            case SDL_QUIT :
+        switch(event.type)
+        {
+            case SDL_QUIT:
                 continuer = 0;
-                 break;   
+                break;
         }
-   
-        if (positionVache.x > 900) droite = 0;
-        if (positionVache.x <= 600) droite = 1;
-   
 
-        if (droite) positionVache.x++;
-        else positionVache.x--;
-   
-        SDL_Delay(10); 
-        SDL_FillRect(fond,NULL,SDL_MapRGB(fond->format,255,255,255));
-        SDL_BlitSurface(pelouse,NULL,fond,&positionPelouse);
-        SDL_BlitSurface(vache,NULL,fond,&positionVache); 
+        SDL_FillRect(ecran, NULL, SDL_MapRGB(ecran->format, 255, 255, 255));
 
-        SDL_Flip(fond);
+        tempsActuel = SDL_GetTicks();
+        if (tempsActuel - tempsPrecedent >= 100) /* Si 100 ms au moins se sont écoulées */
+        {
+            compteur += 100; /* On rajoute 100 ms au compteur */
+            sprintf(temps, "Temps : %d", compteur); /* On écrit dans la chaîne "temps" le nouveau temps */
+            SDL_FreeSurface(texte); /* On supprime la surface précédente */
+            texte = TTF_RenderText_Shaded(police, temps, couleurNoire, couleurBlanche); /* On écrit la chaîne temps dans la SDL_Surface */
+            tempsPrecedent = tempsActuel; /* On met à jour le tempsPrecedent */
+        }
+        else
+        SDL_Delay(100-(tempsActuel - tempsPrecedent)) ;
+
+        position.x = 180;
+        position.y = 210;
+        SDL_BlitSurface(texte, NULL, ecran, &position); /* Blit du texte */
+        SDL_Flip(ecran);
+
     }
- 
 
-    SDL_FreeSurface(pelouse); 
-    SDL_FreeSurface(vache);
+    TTF_CloseFont(police);
+    TTF_Quit();
+
+    SDL_FreeSurface(texte);
     SDL_Quit();
- 
-    return EXIT_SUCCESS;
- 
-}
 
+    return EXIT_SUCCESS;
+}
