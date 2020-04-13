@@ -31,7 +31,7 @@ enemy E;
 
 initialiser_enemy(E);
 
-/*if(SDL_Init(SDL_INIT_VIDEO)!=0)
+if(SDL_Init(SDL_INIT_VIDEO)!=0)
 {
 printf("Unable to initialize SDL:%s\n",SDL_GetError());
 return 1;
@@ -45,7 +45,7 @@ return 1;
 }
 
 positionecran.x=0;
-positionecran.y=0;*/
+positionecran.y=0;
 
 afficher_enemy(E,screen);
 
